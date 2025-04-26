@@ -1,5 +1,4 @@
 
-// Button.jsx - Branch-style button component
 import React from 'react';
 import { BranchTheme } from './Theme';
 
