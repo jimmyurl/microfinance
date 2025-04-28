@@ -1,9 +1,9 @@
 // Dashboard.jsx - Example dashboard layout using Branch styling
 import React from 'react';
-import { Card } from './Card';
-import { LoanCard } from './LoanCard';
-import { Progress } from './Progress';
-import { Button } from './Button';
+import { Card } from '../components/common/Card';
+import { LoanCard } from './../components/loans/LoanCard';
+import { Progress } from '../components/common/Progress';
+import { Button } from '../components/common/Button';
 
 export const Dashboard = () => {
   // Mock data

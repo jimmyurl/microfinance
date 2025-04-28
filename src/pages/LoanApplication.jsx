@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Card } from './Card';
-import { LoanApplicationForm } from './LoanApplicationForm';
-import { Button } from './Button';
+import { Card } from '../components/common/Card';
+import { LoanApplicationForm } from '../components/loans/LoanApplicationForm';
+import { Button } from '../components/common/Button';
 
 export const LoanApplication = () => {
   const [applicationSubmitted, setApplicationSubmitted] = useState(false);

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Button } from './Button';
-import { Progress } from './Progress';
+import { Button } from '../common/Button';
+import { Progress } from '../common/Progress';
 
 export const LoanApplicationForm = ({ onSubmit }) => {
   const [currentStep, setCurrentStep] = useState(1);
