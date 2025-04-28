@@ -1,6 +1,6 @@
 // LoanCard.jsx - Branch-style loan card component
 import React from 'react';
-import { Button } from './Button';
+import { Button } from '../common/Button';
 
 export const LoanCard = ({
   loanAmount,
