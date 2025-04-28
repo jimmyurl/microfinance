@@ -1,7 +1,7 @@
 // Verification.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import Button from '../../components/common/Button';
+import { Button } from '../../components/common/Button';
 import { Alert } from '../../components/common/Alert';
 import { useAuth } from '../../hooks/useAuth';
 
