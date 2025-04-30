@@ -2,30 +2,21 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
-import { LoanProvider } from './context/LoanContext';
-
-// Layout component
-import MainLayout from './components/layout/MainLayout';
-
-// Auth pages
+import  LoanProvider from './context/LoanContext';
+import { MainLayout} from './components/layout/MainLayout';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import ForgotPassword from './pages/auth/ForgotPassword';
 import Verification from './pages/auth/Verification';
-
-// Main pages
-import Dashboard from './pages/Dashboard';
-import LoanApplication from './pages/LoanApplication';
-import LoanDetails from './pages/LoanDetails';
-import Repayment from './pages/Repayment';
-import TransactionHistory from './pages/TransactionHistory';
-import Profile from './pages/Profile';
-import Settings from './pages/Settings';
-
-// Guards and utilities
+import { Dashboard } from './pages/Dashboard';
+import { LoanApplication } from './pages/LoanApplication';
+import LoanDetails from '/src/pages/LoanDetails.jsx';
+import { Repayment } from './pages/Repayment';
+import { TransactionHistory } from './pages/TransactionHistory';
+import  Profile  from './pages/Profile';
+import { Settings } from './pages/Settings';
 import { useAuth } from './hooks/useAuth';
 
-// Protected route component
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
   

@@ -92,7 +92,8 @@ export function AuthProvider({ children }) {
     isAuthenticated: !!user,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  // Use React.createElement instead of JSX
+  return React.createElement(AuthContext.Provider, { value }, children);
 }
 
 // Custom hook that shorthands the context
