@@ -13,7 +13,7 @@ import { LoanApplication } from './pages/LoanApplication';
 import LoanDetails from '/src/pages/LoanDetails.jsx';
 import { Repayment } from './pages/Repayment';
 import { TransactionHistory } from './pages/TransactionHistory';
-import  Profile  from './pages/Profile';
+import { Profile } from './pages/Profile';
 import { Settings } from './pages/Settings';
 import { useAuth } from './hooks/useAuth';
 

@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/common/Card';
+import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
-//import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { Avatar } from '../components/ui/avatar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/common/tabs';
-import { toast } from '../components/ui/use-toast';
+import { TextField } from '../components/common/TextField';
+import { Tabs } from '../components/common/Tabs';
+import { Alert } from '../components/common/Alert';
+import { Badge } from '../components/common/Badge';
+import { Loader } from '../components/common/Loader';
+import { Modal } from '../components/common/Modal';
+import { Progress } from '../components/common/Progress';
 
 export function Profile() {
   const { user, updateUserProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState({ type: '', text: '' });
+  const [activeTab, setActiveTab] = useState('personal');
   const [profileData, setProfileData] = useState({
     firstName: '',
     lastName: '',
@@ -52,252 +57,260 @@ export function Profile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       // Call API to update profile
       await updateUserProfile(profileData);
       setIsEditing(false);
-      toast({
-        title: "Profile Updated",
-        description: "Your profile information has been successfully updated.",
-        variant: "success",
+      setMessage({ 
+        type: 'success', 
+        text: 'Your profile information has been successfully updated.' 
       });
     } catch (error) {
-      toast({
-        title: "Update Failed",
-        description: error.message || "There was an error updating your profile.",
-        variant: "destructive",
+      setMessage({ 
+        type: 'error', 
+        text: error.message || 'There was an error updating your profile.' 
       });
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
   };
 
   return (
     <div className="container mx-auto py-8">
       <h1 className="text-3xl font-bold mb-6">My Profile</h1>
       
-      <div className="grid md:grid-cols-3 gap-6">
+      {message.text && (
+        <Alert 
+          type={message.type} 
+          message={message.text} 
+          onClose={() => setMessage({ type: '', text: '' })}
+        />
+      )}
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Profile Summary Card */}
         <Card className="md:col-span-1">
-          <CardHeader>
-            <CardTitle>Profile Summary</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col items-center">
-            <Avatar className="w-24 h-24 mb-4">
-              <span className="text-2xl font-bold">
-                {profileData.firstName && profileData.lastName 
-                  ? `${profileData.firstName[0]}${profileData.lastName[0]}`
-                  : 'U'}
-              </span>
-            </Avatar>
-            <h2 className="text-xl font-semibold mb-1">
-              {profileData.firstName} {profileData.lastName}
-            </h2>
-            <p className="text-gray-500 mb-4">{profileData.email}</p>
-            <div className="w-full mt-4">
-              <div className="flex justify-between mb-2">
-                <span className="text-gray-500">Membership Status</span>
-                <span className="font-medium">Active</span>
+          <div className="p-6">
+            <h2 className="text-xl font-bold mb-4">Profile Summary</h2>
+            <div className="flex flex-col items-center">
+              <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center mb-4">
+                <span className="text-2xl font-bold text-white">
+                  {profileData.firstName && profileData.lastName 
+                    ? `${profileData.firstName[0]}${profileData.lastName[0]}`
+                    : 'U'}
+                </span>
               </div>
-              <div className="flex justify-between mb-2">
-                <span className="text-gray-500">Member Since</span>
-                <span className="font-medium">Jan 2023</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500">Credit Score</span>
-                <span className="font-medium">Good</span>
+              <h2 className="text-xl font-semibold mb-1">
+                {profileData.firstName} {profileData.lastName}
+              </h2>
+              <p className="text-gray-500 mb-4">{profileData.email}</p>
+              <div className="w-full mt-4">
+                <div className="flex justify-between mb-2">
+                  <span className="text-gray-500">Membership Status</span>
+                  <Badge type="success">Active</Badge>
+                </div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-gray-500">Member Since</span>
+                  <span className="font-medium">Jan 2023</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Credit Score</span>
+                  <Badge type="primary">Good</Badge>
+                </div>
               </div>
             </div>
-          </CardContent>
+          </div>
         </Card>
 
         {/* Profile Details */}
         <Card className="md:col-span-2">
-          <CardHeader>
-            <div className="flex justify-between items-center">
-              <CardTitle>Profile Details</CardTitle>
+          <div className="p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Profile Details</h2>
               {!isEditing && (
                 <Button 
-                  variant="outline" 
+                  variant="secondary" 
                   onClick={() => setIsEditing(true)}
                 >
                   Edit Profile
                 </Button>
               )}
             </div>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="personal">
-              <TabsList className="mb-4">
-                <TabsTrigger value="personal">Personal Info</TabsTrigger>
-                <TabsTrigger value="contact">Contact Details</TabsTrigger>
-                <TabsTrigger value="financial">Financial Info</TabsTrigger>
-              </TabsList>
+            
+            <Tabs 
+              items={[
+                { id: 'personal', label: 'Personal Info' },
+                { id: 'contact', label: 'Contact Details' },
+                { id: 'financial', label: 'Financial Info' }
+              ]}
+              activeTab={activeTab}
+              onChange={handleTabChange}
+            />
 
-              <form onSubmit={handleSubmit}>
-                <TabsContent value="personal">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="firstName">First Name</Label>
-                      <Input
-                        id="firstName"
-                        name="firstName"
-                        value={profileData.firstName}
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="lastName">Last Name</Label>
-                      <Input
-                        id="lastName"
-                        name="lastName"
-                        value={profileData.lastName}
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="email">Email Address</Label>
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        value={profileData.email}
-                        onChange={handleChange}
-                        disabled={true} // Email usually can't be changed easily
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="phone">Phone Number</Label>
-                      <Input
-                        id="phone"
-                        name="phone"
-                        value={profileData.phone}
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        className="mt-1"
-                      />
-                    </div>
+            <form onSubmit={handleSubmit}>
+              {activeTab === 'personal' && (
+                <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <TextField
+                      label="First Name"
+                      id="firstName"
+                      name="firstName"
+                      value={profileData.firstName}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                    />
                   </div>
-                </TabsContent>
+                  <div>
+                    <TextField
+                      label="Last Name"
+                      id="lastName"
+                      name="lastName"
+                      value={profileData.lastName}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                    />
+                  </div>
+                  <div>
+                    <TextField
+                      label="Email Address"
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={profileData.email}
+                      onChange={handleChange}
+                      disabled={true} // Email usually can't be changed easily
+                    />
+                  </div>
+                  <div>
+                    <TextField
+                      label="Phone Number"
+                      id="phone"
+                      name="phone"
+                      value={profileData.phone}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                    />
+                  </div>
+                </div>
+              )}
 
-                <TabsContent value="contact">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="md:col-span-2">
-                      <Label htmlFor="address">Street Address</Label>
-                      <Input
-                        id="address"
-                        name="address"
-                        value={profileData.address}
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="city">City</Label>
-                      <Input
-                        id="city"
-                        name="city"
-                        value={profileData.city}
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="region">Region</Label>
-                      <Input
-                        id="region"
-                        name="region"
-                        value={profileData.region}
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="ward">Ward</Label>
-                      <Input
-                        id="ward"
-                        name="ward"
-                        value={profileData.ward}
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        className="mt-1"
-                      />
-                    </div>
+              {activeTab === 'contact' && (
+                <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="md:col-span-2">
+                    <TextField
+                      label="Street Address"
+                      id="address"
+                      name="address"
+                      value={profileData.address}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                    />
                   </div>
-                </TabsContent>
+                  <div>
+                    <TextField
+                      label="City"
+                      id="city"
+                      name="city"
+                      value={profileData.city}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                    />
+                  </div>
+                  <div>
+                    <TextField
+                      label="Region"
+                      id="region"
+                      name="region"
+                      value={profileData.region}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                    />
+                  </div>
+                  <div>
+                    <TextField
+                      label="Ward"
+                      id="ward"
+                      name="ward"
+                      value={profileData.ward}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                    />
+                  </div>
+                </div>
+              )}
 
-                <TabsContent value="financial">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="occupation">Occupation</Label>
-                      <Input
-                        id="occupation"
-                        name="occupation"
-                        value={profileData.occupation}
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="monthlyIncome">Monthly Income</Label>
-                      <Input
-                        id="monthlyIncome"
-                        name="monthlyIncome"
-                        value={profileData.monthlyIncome}
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        className="mt-1"
-                      />
-                    </div>
+              {activeTab === 'financial' && (
+                <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <TextField
+                      label="Occupation"
+                      id="occupation"
+                      name="occupation"
+                      value={profileData.occupation}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                    />
                   </div>
-                </TabsContent>
+                  <div>
+                    <TextField
+                      label="Monthly Income"
+                      id="monthlyIncome"
+                      name="monthlyIncome"
+                      value={profileData.monthlyIncome}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                    />
+                  </div>
+                </div>
+              )}
 
-                {isEditing && (
-                  <div className="flex justify-end gap-2 mt-6">
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      onClick={() => setIsEditing(false)}
-                    >
-                      Cancel
-                    </Button>
-                    <Button type="submit">Save Changes</Button>
-                  </div>
-                )}
-              </form>
-            </Tabs>
-          </CardContent>
+              {isEditing && (
+                <div className="flex justify-end gap-2 mt-6">
+                  <Button 
+                    type="button" 
+                    variant="secondary" 
+                    onClick={() => setIsEditing(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    type="submit" 
+                    variant="primary"
+                    disabled={loading}
+                  >
+                    {loading ? <Loader size="sm" /> : 'Save Changes'}
+                  </Button>
+                </div>
+              )}
+            </form>
+          </div>
         </Card>
       </div>
 
-      {/* Loan History/Documents Section */}
-      <Card className="mt-6">
-        <CardHeader>
-          <CardTitle>Document Management</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid md:grid-cols-2 gap-6">
+      {/* Document Management Section */}
+      <Card className="mt-8">
+        <div className="p-6">
+          <h2 className="text-xl font-bold mb-4">Document Management</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <h3 className="font-semibold mb-3">Uploaded Documents</h3>
               <div className="space-y-2">
-                <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded">
                   <span>ID Proof.pdf</span>
-                  <Button size="sm" variant="ghost">View</Button>
+                  <Button size="sm" variant="link">View</Button>
                 </div>
-                <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded">
                   <span>Income Certificate.pdf</span>
-                  <Button size="sm" variant="ghost">View</Button>
+                  <Button size="sm" variant="link">View</Button>
                 </div>
-                <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded">
                   <span>Address Proof.pdf</span>
-                  <Button size="sm" variant="ghost">View</Button>
+                  <Button size="sm" variant="link">View</Button>
                 </div>
               </div>
             </div>
@@ -306,10 +319,11 @@ export function Profile() {
               <h3 className="font-semibold mb-3">Upload New Documents</h3>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="documentType">Document Type</Label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Document Type
+                  </label>
                   <select 
-                    id="documentType" 
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1"
+                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                   >
                     <option value="">Select document type</option>
                     <option value="id">ID Proof</option>
@@ -320,19 +334,27 @@ export function Profile() {
                 </div>
                 
                 <div>
-                  <Label htmlFor="fileUpload">Upload File</Label>
-                  <Input 
-                    id="fileUpload" 
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Upload File
+                  </label>
+                  <input 
                     type="file" 
-                    className="mt-1" 
+                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" 
                   />
                 </div>
                 
-                <Button className="w-full">Upload Document</Button>
+                <div className="flex items-center gap-2">
+                  <Progress value={0} max={100} className="flex-1" />
+                  <span className="text-sm">0%</span>
+                </div>
+                
+                <Button variant="primary" className="w-full">
+                  Upload Document
+                </Button>
               </div>
             </div>
           </div>
-        </CardContent>
+        </div>
       </Card>
     </div>
   );
