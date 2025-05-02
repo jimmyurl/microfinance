@@ -1,42 +1,44 @@
-// tailwind.config.js
-const BranchTheme = require('./theme');
-
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-    "./public/index.html",
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class', // Enable dark mode with class strategy
   theme: {
-    colors: {
-      primary: BranchTheme.colors.primary,
-      'primary-dark': BranchTheme.colors.primaryDark,
-      'primary-light': BranchTheme.colors.primaryLight,
-      secondary: BranchTheme.colors.secondary,
-      'secondary-dark': BranchTheme.colors.secondaryDark,
-      success: BranchTheme.colors.success,
-      danger: BranchTheme.colors.danger,
-      warning: BranchTheme.colors.warning,
-      info: BranchTheme.colors.info,
-      gray: BranchTheme.colors.gray,
-      'gray-light': BranchTheme.colors.grayLight,
-      'gray-dark': BranchTheme.colors.grayDark,
-      white: BranchTheme.colors.white,
-      black: BranchTheme.colors.black,
-      background: BranchTheme.colors.background,
-      surface: BranchTheme.colors.surface,
-      border: BranchTheme.colors.border,
+    extend: {
+      colors: {
+        branch: {
+          primary: {
+            light: '#0ABF53', // Light mode green
+            dark: '#00D775', // Dark mode green
+          },
+          background: {
+            light: '#FFFFFF',
+            dark: '#121212',
+          },
+          card: {
+            light: '#F8F8F8',
+            dark: '#1E1E1E',
+          },
+          text: {
+            light: '#333333',
+            dark: '#FFFFFF',
+          },
+          secondaryText: {
+            light: '#6E6E6E',
+            dark: '#B0B0B0',
+          },
+          border: {
+            light: '#E0E0E0',
+            dark: '#333333',
+          },
+        },
+      },
+      fontFamily: {
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
     },
-    fontFamily: {
-      sans: BranchTheme.typography.fontFamily.split(',').map(font => font.trim().replace(/'/g, '')),
-    },
-    fontSize: BranchTheme.typography.fontSize,
-    fontWeight: BranchTheme.typography.fontWeight,
-    spacing: BranchTheme.spacing,
-    borderRadius: BranchTheme.borderRadius,
-    boxShadow: BranchTheme.shadows,
-    screens: BranchTheme.breakpoints,
-    extend: {},
   },
   plugins: [],
-};
+}

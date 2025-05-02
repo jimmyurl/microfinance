@@ -1,25 +1,24 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+// src/context/ThemeContext.jsx
+import { createContext, useContext, useState, useEffect } from 'react';
 
-// Create Theme Context
-export const ThemeContext = createContext();
+// Create the theme context
+const ThemeContext = createContext();
 
-// Custom hook for easy context usage
-export const useTheme = () => useContext(ThemeContext);
-
+// Theme provider component
 export const ThemeProvider = ({ children }) => {
-  // Check if user has a theme preference saved in localStorage
-  // or use their system preference as default
-  const getInitialTheme = () => {
+  // Check if user has a theme preference in localStorage
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    // Check for saved theme preference
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
       return savedTheme === 'dark';
     }
-    // Check system preference
+    
+    // Check for system preference
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  };
+  });
 
-  const [isDarkMode, setIsDarkMode] = useState(getInitialTheme);
-
+  // Toggle between light and dark mode
   const toggleTheme = () => {
     setIsDarkMode(prevMode => !prevMode);
   };
@@ -28,7 +27,7 @@ export const ThemeProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
     
-    // Apply theme to document
+    // Update document class for global styling
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
     } else {
@@ -36,15 +35,20 @@ export const ThemeProvider = ({ children }) => {
     }
   }, [isDarkMode]);
 
-  // Also set the theme on initial load
+  // Listen for system theme changes
   useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = () => {
+      if (!localStorage.getItem('theme')) {
+        setIsDarkMode(mediaQuery.matches);
+      }
+    };
+    
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
+  // Values provided to consuming components
   const value = {
     isDarkMode,
     toggleTheme
@@ -56,3 +60,14 @@ export const ThemeProvider = ({ children }) => {
     </ThemeContext.Provider>
   );
 };
+
+// Custom hook for using the theme context
+export const useTheme = () => {
+  const context = useContext(ThemeContext);
+  if (context === undefined) {
+    throw new Error('useTheme must be used within a ThemeProvider');
+  }
+  return context;
+};
+
+export default ThemeContext;

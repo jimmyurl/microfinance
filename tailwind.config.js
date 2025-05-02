@@ -1,119 +1,66 @@
 // tailwind.config.js
-const { BranchWebTheme } = require('./theme');
+const BranchTheme = require('./theme');
 
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
     "./public/index.html",
   ],
   theme: {
+    colors: {
+      transparent: 'transparent',
+      current: 'currentColor',
+      ...BranchTheme.colors, // Spread all colors directly
+    },
+    fontFamily: {
+      sans: BranchTheme.typography.fontFamily.split(',').map(font => font.trim().replace(/'/g, '')),
+    },
+    fontSize: BranchTheme.typography.fontSize,
+    fontWeight: BranchTheme.typography.fontWeight,
+    spacing: BranchTheme.spacing,
+    borderRadius: BranchTheme.borderRadius,
+    boxShadow: {
+      sm: BranchTheme.shadows.sm,
+      DEFAULT: BranchTheme.shadows.sm, // Default shadow
+      md: BranchTheme.shadows.md,
+      lg: BranchTheme.shadows.lg,
+      xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)', // Added extra large shadow
+      '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+      inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
+      none: 'none',
+    },
+    screens: BranchTheme.breakpoints,
     extend: {
-      colors: {
-        primary: BranchWebTheme.colors.primary,
-        'primary-dark': BranchWebTheme.colors.primaryDark,
-        'primary-light': BranchWebTheme.colors.primaryLight,
-        secondary: BranchWebTheme.colors.secondary,
-        'secondary-dark': BranchWebTheme.colors.secondaryDark,
-        success: BranchWebTheme.colors.success,
-        danger: BranchWebTheme.colors.danger,
-        warning: BranchWebTheme.colors.warning,
-        info: BranchWebTheme.colors.info,
-        gray: BranchWebTheme.colors.gray,
-        'gray-light': BranchWebTheme.colors.grayLight,
-        'gray-dark': BranchWebTheme.colors.grayDark,
-        background: BranchWebTheme.colors.background,
-        surface: BranchWebTheme.colors.surface,
-        border: BranchWebTheme.colors.border,
-        'nav-bg': BranchWebTheme.colors.navBackground,
-        'card-bg': BranchWebTheme.colors.cardBackground,
-        'header-bg': BranchWebTheme.colors.headerBackground,
-        'footer-bg': BranchWebTheme.colors.footerBackground,
-        hover: BranchWebTheme.colors.hover,
-        active: BranchWebTheme.colors.active,
+      maxWidth: {
+        'prose': '65ch',
+        'content': '1200px',
       },
-      fontFamily: {
-        sans: BranchWebTheme.typography.fontFamily.split(',').map(font => font.trim().replace(/'/g, '')),
+      zIndex: {
+        'dropdown': 1000,
+        'sticky': 1020,
+        'fixed': 1030,
+        'modal': 1050,
+        'popover': 1070,
+        'toast': 1090,
       },
-      fontSize: {
-        'xs': BranchWebTheme.typography.fontSizes.xs,
-        'sm': BranchWebTheme.typography.fontSizes.sm,
-        'base': BranchWebTheme.typography.fontSizes.md,
-        'lg': BranchWebTheme.typography.fontSizes.lg,
-        'xl': BranchWebTheme.typography.fontSizes.xl,
-        '2xl': BranchWebTheme.typography.fontSizes['2xl'],
-        '3xl': BranchWebTheme.typography.fontSizes['3xl'],
-        '4xl': BranchWebTheme.typography.fontSizes['4xl'],
-        '5xl': BranchWebTheme.typography.fontSizes['5xl'],
-        '6xl': BranchWebTheme.typography.fontSizes['6xl'],
-      },
-      fontWeight: {
-        light: BranchWebTheme.typography.fontWeights.light,
-        normal: BranchWebTheme.typography.fontWeights.regular,
-        medium: BranchWebTheme.typography.fontWeights.medium,
-        semibold: BranchWebTheme.typography.fontWeights.semibold,
-        bold: BranchWebTheme.typography.fontWeights.bold,
-      },
+      // Additional extensions for better website styling
       lineHeight: {
-        tight: BranchWebTheme.typography.lineHeights.tight,
-        normal: BranchWebTheme.typography.lineHeights.normal,
-        relaxed: BranchWebTheme.typography.lineHeights.relaxed,
-      },
-      letterSpacing: {
-        tight: BranchWebTheme.typography.letterSpacing.tight,
-        normal: BranchWebTheme.typography.letterSpacing.normal,
-        wide: BranchWebTheme.typography.letterSpacing.wide,
-      },
-      spacing: {
-        'xs': BranchWebTheme.spacing.xs,
-        'sm': BranchWebTheme.spacing.sm,
-        'md': BranchWebTheme.spacing.md,
-        'lg': BranchWebTheme.spacing.lg,
-        'xl': BranchWebTheme.spacing.xl,
-        '2xl': BranchWebTheme.spacing['2xl'],
-        '3xl': BranchWebTheme.spacing['3xl'],
-        '4xl': BranchWebTheme.spacing['4xl'],
-        '5xl': BranchWebTheme.spacing['5xl'],
-      },
-      borderRadius: {
-        'none': BranchWebTheme.borderRadius.none,
-        'sm': BranchWebTheme.borderRadius.sm,
-        'md': BranchWebTheme.borderRadius.md,
-        'lg': BranchWebTheme.borderRadius.lg,
-        'xl': BranchWebTheme.borderRadius.xl,
-        'full': BranchWebTheme.borderRadius.full,
-      },
-      boxShadow: {
-        'none': BranchWebTheme.shadows.none,
-        'sm': BranchWebTheme.shadows.sm,
-        'md': BranchWebTheme.shadows.md,
-        'lg': BranchWebTheme.shadows.lg,
-        'xl': BranchWebTheme.shadows.xl,
-        'inner': BranchWebTheme.shadows.inner,
-      },
-      screens: {
-        'xs': BranchWebTheme.breakpoints.xs,
-        'sm': BranchWebTheme.breakpoints.sm,
-        'md': BranchWebTheme.breakpoints.md,
-        'lg': BranchWebTheme.breakpoints.lg,
-        'xl': BranchWebTheme.breakpoints.xl,
-        '2xl': BranchWebTheme.breakpoints['2xl'],
-      },
-      container: {
-        center: true,
-        padding: BranchWebTheme.container.padding,
+        'tight': 1.25,
+        'relaxed': 1.6,
       },
       transitionDuration: {
-        'fast': BranchWebTheme.animation.transitionDuration.fast,
-        'normal': BranchWebTheme.animation.transitionDuration.normal,
-        'slow': BranchWebTheme.animation.transitionDuration.slow,
+        '250': '250ms',
       },
-      transitionTimingFunction: {
-        'default': BranchWebTheme.animation.transitionTiming.default,
-        'in': BranchWebTheme.animation.transitionTiming.in,
-        'out': BranchWebTheme.animation.transitionTiming.out,
-        'in-out': BranchWebTheme.animation.transitionTiming.inOut,
+      opacity: {
+        '15': '0.15',
+        '85': '0.85',
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms'), // For better form styling
+    require('@tailwindcss/typography'), // For prose content
+    require('@tailwindcss/aspect-ratio'), // For aspect ratio utilities
+  ],
 };
