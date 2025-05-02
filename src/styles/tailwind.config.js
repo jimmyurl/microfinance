@@ -1,39 +1,42 @@
-// tailwind.config.js (root directory)
-import { BranchTheme } from './src/styles/theme';
+// tailwind.config.js
+const BranchTheme = require('./theme');
 
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{js,jsx,ts,tsx}",
+    "./public/index.html",
   ],
   theme: {
-    extend: {
-      colors: {
-        primary: BranchTheme.colors.primary,
-        'primary-dark': BranchTheme.colors.primaryDark,
-        'primary-light': BranchTheme.colors.primaryLight,
-        secondary: BranchTheme.colors.secondary,
-        'secondary-dark': BranchTheme.colors.secondaryDark,
-        success: BranchTheme.colors.success,
-        danger: BranchTheme.colors.danger,
-        warning: BranchTheme.colors.warning,
-        info: BranchTheme.colors.info,
-        'gray-light': BranchTheme.colors.grayLight,
-        'gray-dark': BranchTheme.colors.grayDark,
-      },
-      fontFamily: {
-        sans: ["'Inter', 'Segoe UI', 'Roboto', sans-serif"],
-      },
-      fontSize: BranchTheme.typography.fontSizes,
-      fontWeight: BranchTheme.typography.fontWeights,
-      borderRadius: BranchTheme.borderRadius,
-      boxShadow: {
-        sm: BranchTheme.shadows.sm,
-        md: BranchTheme.shadows.md,
-        lg: BranchTheme.shadows.lg,
-      },
+    colors: {
+      primary: BranchTheme.colors.primary,
+      'primary-dark': BranchTheme.colors.primaryDark,
+      'primary-light': BranchTheme.colors.primaryLight,
+      secondary: BranchTheme.colors.secondary,
+      'secondary-dark': BranchTheme.colors.secondaryDark,
+      success: BranchTheme.colors.success,
+      danger: BranchTheme.colors.danger,
+      warning: BranchTheme.colors.warning,
+      info: BranchTheme.colors.info,
+      gray: BranchTheme.colors.gray,
+      'gray-light': BranchTheme.colors.grayLight,
+      'gray-dark': BranchTheme.colors.grayDark,
+      white: BranchTheme.colors.white,
+      black: BranchTheme.colors.black,
+      background: BranchTheme.colors.background,
+      surface: BranchTheme.colors.surface,
+      border: BranchTheme.colors.border,
     },
+    fontFamily: {
+      sans: BranchTheme.typography.fontFamily.split(',').map(font => font.trim().replace(/'/g, '')),
+    },
+    fontSize: BranchTheme.typography.fontSize,
+    fontWeight: BranchTheme.typography.fontWeight,
+    spacing: BranchTheme.spacing,
+    borderRadius: BranchTheme.borderRadius,
+    boxShadow: BranchTheme.shadows,
+    screens: BranchTheme.breakpoints,
+    extend: {},
   },
   plugins: [],
-}
+};
