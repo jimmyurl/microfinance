@@ -1,14 +1,14 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-
-// Import all CSS files
-import './index.css'  // Tailwind CSS imports
-import './App.css'    // Branch theme styles
-
+import React from 'react'
+import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
+// Import Tailwind base styles first
+import './index.css' // This should contain @tailwind base; @tailwind components; @tailwind utilities;
+// Then import your custom CSS
+import './App.css'
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
     <App />
-  </StrictMode>,
+  </React.StrictMode>,
 )
