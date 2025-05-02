@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { TextField } from '../../components/common/TextField';
 import { Button } from '../../components/common/Button';
 import { Alert } from '../../components/common/Alert';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../../context/AuthContext';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');

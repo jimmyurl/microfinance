@@ -1,5 +1,5 @@
-// tailwind.config.js
-import { BranchTheme } from './theme';
+// tailwind.config.js (root directory)
+import { BranchTheme } from './src/styles/theme';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -23,11 +23,10 @@ export default {
         'gray-dark': BranchTheme.colors.grayDark,
       },
       fontFamily: {
-        sans: [BranchTheme.typography.fontFamily],
+        sans: ["'Inter', 'Segoe UI', 'Roboto', sans-serif"],
       },
       fontSize: BranchTheme.typography.fontSizes,
       fontWeight: BranchTheme.typography.fontWeights,
-      spacing: BranchTheme.spacing,
       borderRadius: BranchTheme.borderRadius,
       boxShadow: {
         sm: BranchTheme.shadows.sm,
